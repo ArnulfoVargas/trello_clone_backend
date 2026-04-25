@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/ArnulfoVargas/trello_clone_backend.git/cmd/database"
 	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"
 )
@@ -13,6 +14,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	var conn = &database.Database{}
+	conn.ConnectDB(os.Getenv("DB_STRING"))
 
 	app := fiber.New()
 
