@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/ArnulfoVargas/trello_clone_backend.git/cmd/database"
-	"github.com/gofiber/fiber/v3"
+	"github.com/ArnulfoVargas/trello_clone_backend.git/cmd/routes"
 	"github.com/joho/godotenv"
 )
 
@@ -18,15 +18,10 @@ func main() {
 	var conn = &database.Database{}
 	conn.ConnectDB(os.Getenv("DB_STRING"))
 
-	app := fiber.New()
+	app := routes.NewRouter()
+	app.SetDb(conn)
 
-	app.Get("/", HelloWorld)
+	app.BindAuthRoutes()
 
-	panic(app.Listen(":" + os.Getenv("PORT")))
-}
-
-func HelloWorld(c fiber.Ctx) error {
-	return c.JSON(fiber.Map{
-		"success": "true",
-	})
+	app.ServeHttp()
 }

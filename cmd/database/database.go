@@ -5,7 +5,9 @@ import (
 	"gorm.io/gorm"
 )
 
-var config = gorm.Config{}
+var config = gorm.Config{
+	DisableForeignKeyConstraintWhenMigrating: true,
+}
 
 var Connection *Database
 
@@ -13,18 +15,21 @@ type Database struct {
 	Db *gorm.DB
 }
 
-func (db Database) ConnectDB(dsn string) {
+func (db *Database) ConnectDB(dsn string) {
 
-	if (Connection != nil) {
+	if Connection != nil {
 		return
 	}
 
 	conn, err := gorm.Open(mysql.Open(dsn), &config)
-	
-	if (err != nil) {
+
+	if err != nil {
 		panic(err)
 	}
-	
+
 	db.Db = conn
-	Connection = &db;
+
+	db.bindMigrations()
+
+	Connection = db
 }
