@@ -45,7 +45,7 @@ func (r *Register) ValidatePassword() (bool, string) {
 
 func (r *Register) ValidateUsername() (bool, string) {
     if len(r.Username) < 3 {
-        return false, "At least 8 characters"
+        return false, "At least 3 characters"
     }
     if len(r.Username) > 50 {
         return false, "Max 50 characters"

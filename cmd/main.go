@@ -22,6 +22,8 @@ func main() {
 	app.SetDb(conn)
 
 	app.BindAuthRoutes()
+	app.BindBoardsRoutes()
+	app.BindUserRoutes()
 
 	app.ServeHttp()
 }

@@ -1,6 +1,8 @@
 package database
 
 import (
+	"time"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -16,7 +18,6 @@ type Database struct {
 }
 
 func (db *Database) ConnectDB(dsn string) {
-
 	if Connection != nil {
 		return
 	}
@@ -26,6 +27,23 @@ func (db *Database) ConnectDB(dsn string) {
 	if err != nil {
 		panic(err)
 	}
+
+	sqlDB, err := conn.DB()
+    if err != nil {
+        panic(err)
+    }
+
+    sqlDB.SetMaxIdleConns(10)
+    sqlDB.SetMaxOpenConns(100)
+    sqlDB.SetConnMaxLifetime(time.Hour)
+    sqlDB.SetConnMaxIdleTime(time.Minute * 30)
+
+	go func() {
+        for {
+            time.Sleep(time.Minute * 5)
+            sqlDB.Ping()
+        }
+    }()
 
 	db.Db = conn
 
